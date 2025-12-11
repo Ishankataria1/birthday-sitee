@@ -43,6 +43,16 @@
     position:relative;
     overflow:visible;
     border:1px solid rgba(255,255,255,0.6);
+
+    /* NEW: soft entrance */
+    animation: fadeInSoft 1.2s ease-out forwards;
+    opacity: 0;
+  }
+
+  /* ADD: soft fade-in for the card */
+  @keyframes fadeInSoft {
+    0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
   }
 
   /* glowing sliding border */
@@ -368,7 +378,8 @@ function spawnFloatingBalloon() {
   tail.style.transform='translateX(-50%)';
   el.appendChild(tail);
 
-  const duration = Math.round(rand(7000,14000));
+  // SLOWER balloon animation (10–18 seconds)
+  const duration = Math.round(rand(10000,18000));
   const sway = Math.round(rand(-150,150));
   el.animate([
     { transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 0.97 },
@@ -377,8 +388,10 @@ function spawnFloatingBalloon() {
 
   setTimeout(()=> el.remove(), duration + 100);
 }
-let b1 = setInterval(spawnFloatingBalloon, 750);
-let b2 = setInterval(spawnFloatingBalloon, 1100);
+
+// Medium amount of balloons (Option A)
+let b1 = setInterval(spawnFloatingBalloon, 2000);  // every 2 seconds
+let b2 = setInterval(spawnFloatingBalloon, 3500);  // every 3.5 seconds
 
 /* ---------- Confetti system (canvas) ---------- */
 const canvas = document.getElementById('confettiCanvas');
@@ -480,3 +493,4 @@ window.addEventListener('beforeunload', ()=>{ clearInterval(b1); clearInterval(b
 </script>
 </body>
 </html>
+
