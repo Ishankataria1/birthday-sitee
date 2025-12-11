@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Happy Birthday</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg1: #fff3f6;
+    --bg2: #fff5ee;
+    --accentA: #ff6fa3;
+    --accentB: #ffb7d9;
+    --muted: #7a2b47;
+    --cardBlur: rgba(255,255,255,0.65);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto; background: linear-gradient(180deg,var(--bg1),var(--bg2)); -webkit-font-smoothing:antialiased; color:#3e1f2b;}
+
+  /* Stage */
+  .stage {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* Center card (glass + pastel) */
+  .card {
+    width:100%;
+    max-width:1100px;
+    border-radius:24px;
+    padding:26px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.80), rgba(255,248,250,0.65));
+    box-shadow: 0 20px 60px rgba(156,56,92,0.10);
+    position:relative;
+    overflow:visible;
+    border:1px solid rgba(255,255,255,0.6);
+  }
+
+  /* glowing sliding border */
+  .card::before{
+    content:"";
+    position:absolute; inset:0; border-radius:24px; padding:2px;
+    background: linear-gradient(90deg, rgba(255,170,200,0.38), rgba(255,110,170,0.34), rgba(255,220,235,0.30));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    pointer-events:none;
+    animation: subtleGlow 4s ease-in-out infinite alternate;
+  }
+  @keyframes subtleGlow{ from{filter:blur(0px)} to{filter:blur(6px)} }
+
+  /* header row */
+  .header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    position:relative;
+    z-index:3;
+  }
+  .brand {
+    display:flex; align-items:center; gap:12px;
+  }
+  .brand .logo {
+    width:64px;height:64px;border-radius:12px;
+    background: linear-gradient(135deg,#ffb7d9,#ff83bb);
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:#4b1226;font-size:26px;box-shadow:0 10px 28px rgba(203,46,101,0.08);
+  }
+  .brand .text h3{ margin:0; font-size:16px; color:var(--muted); font-weight:700; }
+  .brand .text p{ margin:4px 0 0; font-size:13px; color:#8f3b59; opacity:0.9;}
+
+  .controls { display:flex; gap:10px; align-items:center; }
+  .btn {
+    background: linear-gradient(180deg, var(--accentA), var(--accentB));
+    color:#fff; border:none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700;
+    box-shadow: 0 12px 30px rgba(203,46,101,0.12);
+  }
+  .btn.ghost { background:transparent; border:2px solid rgba(255,110,150,0.12); color:var(--muted); box-shadow:none; }
+
+  /* Title area (big) */
+  .greeting {
+    display:flex; align-items:center; flex-direction:column; gap:6px; padding:18px 8px; z-index:2; position:relative;
+  }
+  .greeting .small { font-size:18px; color:var(--muted); font-weight:700; letter-spacing:2px; transform:skewX(-6deg); }
+  .greeting .big { font-size:86px; font-weight:900; color:#e83f74; letter-spacing:3px; margin:6px 0 0; text-transform:uppercase; text-shadow:0 18px 30px rgba(232,63,116,0.06); }
+  .greeting .sub { margin-top:8px; color:#7a2b47; opacity:0.9; font-weight:600; }
+
+  /* center column */
+  .center {
+    display:flex; gap:30px; align-items:flex-start; justify-content:space-between; margin-top:6px; position:relative;
+  }
+
+  /* cake container */
+  .cakeCard {
+    flex:1 1 620px;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    position:relative; z-index:2;
+    padding:8px 18px;
+  }
+
+  /* SVG cake */
+  .cake { width:430px; max-width:86%; filter: drop-shadow(0 30px 40px rgba(187,62,107,0.12)); animation:cakeFloat 5s ease-in-out infinite; }
+  @keyframes cakeFloat{ 0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)} }
+
+  .caption { margin-top:12px; font-weight:700; color:#5b2536; display:flex; gap:8px; align-items:center; }
+
+  /* right column (optional) */
+  .rightCol {
+    width:340px; min-width:260px; display:flex; flex-direction:column; gap:12px; align-items:center; justify-content:flex-start;
+  }
+
+  .giftBox {
+    width:140px; height:140px; border-radius:14px; background: linear-gradient(180deg,#ffb7d9,#ff83bb);
+    display:flex; align-items:center; justify-content:center; box-shadow:0 20px 50px rgba(203,46,101,0.10); cursor:pointer;
+  }
+  .wishMsg { font-size:15px; color:var(--muted); text-align:center; margin-top:6px; }
+
+  /* bottom decorative balloons band (static like reference) */
+  .bottomBand {
+    position:absolute; left:0; right:0; bottom:-28px; height:220px; display:flex; align-items:flex-end; justify-content:center; gap:12px; pointer-events:none; z-index:1;
+    padding-bottom:8px;
+  }
+  .staticBall {
+    width:150px; height:210px; border-radius:50% 50% 46% 46% / 60% 60% 40% 40%;
+    box-shadow:0 30px 40px rgba(0,0,0,0.08);
+    opacity:0.97;
+  }
+
+  /* floating balloons created by JS */
+  .floating { position:fixed; pointer-events:none; z-index:6; border-radius:50% 50% 46% 46% / 60% 60% 40% 40%; box-shadow:0 22px 36px rgba(0,0,0,0.12); }
+
+  /* confetti canvas */
+  #confettiCanvas { position: absolute; inset: 0; width:100%; height:100%; pointer-events:none; z-index:5; }
+
+  /* responsive */
+  @media (max-width:980px){
+    .greeting .big{ font-size:44px }
+    .center{ flex-direction:column; align-items:center }
+    .rightCol{ width:100% }
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="card" id="card">
+      <!-- top header -->
+      <div class="header">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">M</div>
+          <div class="text">
+            <h3>Pink & Cute Celebration</h3>
+            <p>Made with love ✨</p>
+          </div>
+        </div>
+
+        <div class="controls" role="toolbar" aria-label="Controls">
+          <button id="playBtn" class="btn" aria-pressed="false">▶ Play</button>
+          <button id="confBtn" class="btn ghost">Confetti</button>
+        </div>
+      </div>
+
+      <!-- main greeting -->
+      <div class="greeting" role="banner">
+        <div class="small">HAPPY</div>
+        <div class="big" id="bigName">BIRTHDAY</div>
+        <div class="sub" id="nameLine">MOKSHITA</div>
+      </div>
+
+      <div class="center">
+        <!-- cake & caption -->
+        <div class="cakeCard">
+          <!-- Realistic glossy strawberry/pink cake (SVG) -->
+          <svg class="cake" viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pink glossy cake">
+            <defs>
+              <linearGradient id="cakeBaseG" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#fff5f8"/>
+                <stop offset="0.5" stop-color="#ffd6e7"/>
+                <stop offset="1" stop-color="#ffc6dc"/>
+              </linearGradient>
+              <linearGradient id="icingG" x1="0" x2="1">
+                <stop offset="0" stop-color="#fff8fb"/>
+                <stop offset="0.5" stop-color="#ffdbe9"/>
+                <stop offset="1" stop-color="#ffcde0"/>
+              </linearGradient>
+              <radialGradient id="glossy" cx="30%" cy="18%" r="80%">
+                <stop offset="0" stop-color="rgba(255,255,255,0.95)"/>
+                <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+              </radialGradient>
+              <filter id="sd" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#e07aa0" flood-opacity="0.18"/>
+              </filter>
+              <radialGradient id="flame" cx="50%" cy="20%" r="60%">
+                <stop offset="0" stop-color="#fff7b4"/>
+                <stop offset="0.6" stop-color="#ffd166"/>
+                <stop offset="1" stop-color="#ff6b6b"/>
+              </radialGradient>
+            </defs>
+
+            <!-- base plate -->
+            <ellipse cx="350" cy="500" rx="220" ry="34" fill="#fff6f8" opacity="0.95" />
+
+            <g filter="url(#sd)">
+              <!-- shadow ellipse for depth -->
+              <ellipse cx="350" cy="420" rx="150" ry="30" fill="#ffd9e6" opacity="0.95"></ellipse>
+
+              <!-- main bottom tier -->
+              <rect x="200" y="280" width="300" height="180" rx="36" fill="url(#cakeBaseG)" stroke="#ffb0d0" stroke-width="5"></rect>
+
+              <!-- icing drip -->
+              <path d="M200 320 q30 -24 70 0 t80 0 t80 0 t70 0 v20 q-6 18 -56 18 q-44 0 -62 -18 q-8 -8 -8 -20 z"
+                fill="url(#icingG)" opacity="0.98" />
+
+              <!-- top tier -->
+              <rect x="250" y="200" width="200" height="120" rx="26" fill="#fff2f6" stroke="#ffc1da" stroke-width="4"></rect>
+
+              <path d="M250 220 q30 -16 70 0 t80 0 t70 0 v12 q-6 12 -46 12 q-34 0 -49 -12 q-6 -6 -6 -12 z"
+                fill="#ffdfe9" opacity="0.95"></path>
+
+              <!-- glossy highlight -->
+              <ellipse cx="335" cy="280" rx="180" ry="90" fill="url(#glossy)" opacity="0.55" />
+            </g>
+
+            <!-- decorative berries / shapes -->
+            <g transform="translate(235,320) scale(0.85)">
+              <path d="M20 40 C 18 20, 70 12, 80 42 C 90 72, 32 88, 20 40 Z" fill="#ff6b85" opacity="0.95"></path>
+              <path d="M35 15 C 36 6, 46 4, 55 10" stroke="#3c8a3c" stroke-width="2" fill="none"/>
+            </g>
+
+            <g transform="translate(420,300) scale(0.9)">
+              <path d="M20 40 C 18 20, 70 12, 80 42 C 90 72, 32 88, 20 40 Z" fill="#ff7b97" opacity="0.95"></path>
+              <path d="M35 15 C 36 6, 46 4, 55 10" stroke="#3c8a3c" stroke-width="2" fill="none"/>
+            </g>
+
+            <!-- candles placeholder (JS will insert candles) -->
+            <g id="candles" transform="translate(260,160)"></g>
+
+          </svg>
+
+          <div class="caption">Make a wish — blow the candles ✨</div>
+        </div>
+
+        <!-- right column with small gift -->
+        <div class="rightCol" aria-hidden="false">
+          <div class="giftBox" id="gift">
+            <svg width="70" height="70" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 7h18v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z" fill="#fff9fb"/>
+              <path d="M12 3c1.8 0 3.2 1.02 3.86 2.5H8.14C8.8 4.02 10.2 3 12 3z" fill="#fff"/>
+            </svg>
+          </div>
+          <div class="wishMsg">Tap the cake to make a wish</div>
+        </div>
+      </div>
+
+      <!-- static bottom balloons band -->
+      <div class="bottomBand" aria-hidden="true" id="bottomBand">
+        <div class="staticBall" style="background: radial-gradient(circle at 30% 25%, #fff5f6, #f8d7e6); width:160px; height:210px; transform:translateY(10px)"></div>
+        <div class="staticBall" style="background: radial-gradient(circle at 35% 28%, #f8fff7, #dff7ef); width:140px; height:190px; transform:translateY(30px)"></div>
+        <div class="staticBall" style="background: radial-gradient(circle at 25% 20%, #fff8f8, #ffd6e8); width:180px; height:210px; transform:translateY(8px)"></div>
+        <div class="staticBall" style="background: radial-gradient(circle at 35% 30%, #f5fff8, #cff3e8); width:150px; height:195px; transform:translateY(24px)"></div>
+        <div class="staticBall" style="background: radial-gradient(circle at 30% 20%, #fff8f8, #eec7df); width:170px; height:205px; transform:translateY(12px)"></div>
+      </div>
+
+      <!-- confetti canvas -->
+      <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+    </div>
+  </div>
+
+  <!-- background music (free asset) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_4e9f4b2b7d.mp3?filename=happy-ukulele-joyful-11018.mp3" type="audio/mpeg">
+  </audio>
+
+<script>
+/* =========================
+   Script: name from URL, candles, balloons, confetti, music
+   ========================= */
+
+/* Helper */
+function q(s){ return document.querySelector(s); }
+function rand(min,max){ return Math.random()*(max-min)+min; }
+
+/* ---------- Pull name from URL param "name" (fallback to Mokshita) ---------- */
+function getNameFromUrl(){
+  try{
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('name') || params.get('Name') || '';
+    return (name && name.trim().length>0) ? decodeURIComponent(name) : 'Mokshita';
+  }catch(e){ return 'Mokshita'; }
+}
+const name = getNameFromUrl();
+q('#nameLine').textContent = name.toUpperCase();
+
+/* ---------- Candles on cake (JS creates candles and flicker) ---------- */
+function placeCandles(count=7){
+  const group = document.getElementById('candles');
+  group.innerHTML = '';
+  const spacing = 200/(count+1);
+  for(let i=0;i<count;i++){
+    const x = spacing*(i+1);
+    // candle body
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', x-6);
+    rect.setAttribute('y', -22);
+    rect.setAttribute('width', 12);
+    rect.setAttribute('height', 28);
+    rect.setAttribute('rx', 2);
+    rect.setAttribute('fill', '#fff9f6');
+    rect.setAttribute('stroke', '#ffd6d6');
+    rect.setAttribute('stroke-width', '1');
+    group.appendChild(rect);
+
+    // flame
+    const flame = document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+    flame.setAttribute('cx', x);
+    flame.setAttribute('cy', -32);
+    flame.setAttribute('rx', 6);
+    flame.setAttribute('ry', 9);
+    flame.setAttribute('fill', 'url(#flame)');
+    group.appendChild(flame);
+
+    // flicker
+    (function(el){
+      function flick(){
+        el.animate([
+          { transform: 'scale(1)', opacity: 0.96 },
+          { transform: `scale(${1 + Math.random()*0.16})`, opacity: 1 },
+          { transform: 'scale(1)', opacity: 0.96 }
+        ], { duration: 320 + Math.random()*420, easing: 'ease-in-out', iterations: 1 });
+        setTimeout(flick, 280 + Math.random()*500);
+      }
+      flick();
+    })(flame);
+  }
+}
+placeCandles(7);
+
+/* ---------- Floating balloons generator ---------- */
+function spawnFloatingBalloon() {
+  const el = document.createElement('div');
+  el.className = 'floating';
+  const size = Math.round(rand(48,120));
+  el.style.width = size + 'px';
+  el.style.height = Math.round(size * 1.35) + 'px';
+  el.style.left = rand(6,92) + 'vw';
+  el.style.bottom = '-180px';
+  const hue = Math.floor(rand(0,360));
+  el.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.92), hsl(${hue} 80% 72%))`;
+  el.style.border = '1px solid rgba(255,255,255,0.28)';
+  document.body.appendChild(el);
+
+  // tail
+  const tail = document.createElement('div');
+  tail.style.position='absolute';
+  tail.style.left='50%';
+  tail.style.top='100%';
+  tail.style.width='2px';
+  tail.style.height='80px';
+  tail.style.background='linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.03))';
+  tail.style.transform='translateX(-50%)';
+  el.appendChild(tail);
+
+  const duration = Math.round(rand(7000,14000));
+  const sway = Math.round(rand(-150,150));
+  el.animate([
+    { transform: 'translateY(0) translateX(0) rotate(0deg)', opacity: 0.97 },
+    { transform: `translateY(-${window.innerHeight + 260}px) translateX(${sway}px) rotate(${rand(-18,18)}deg)`, opacity: 0.95 }
+  ], { duration: duration, easing: 'linear' });
+
+  setTimeout(()=> el.remove(), duration + 100);
+}
+let b1 = setInterval(spawnFloatingBalloon, 750);
+let b2 = setInterval(spawnFloatingBalloon, 1100);
+
+/* ---------- Confetti system (canvas) ---------- */
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let particles = [];
+function spawnConfetti(n=120){
+  for(let i=0;i<n;i++){
+    particles.push({
+      x: rand(0, canvas.width),
+      y: rand(-300, -10),
+      vx: rand(-1.5, 1.5),
+      vy: rand(2, 6),
+      size: rand(6, 12),
+      angle: rand(0, 360),
+      aVel: rand(-0.2, 0.2),
+      color: `hsl(${rand(0,360)} 90% ${rand(60,72)}%)`,
+      life: 300 + Math.random()*200
+    });
+  }
+  if(!anim) run();
+}
+let anim = false;
+function run(){
+  anim = true;
+  ctx.clearRect(0,0,canvas.width, canvas.height);
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.02;
+    p.angle += p.aVel;
+    p.life--;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.angle);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.64);
+    ctx.restore();
+    if(p.y > canvas.height + 40 || p.life <= 0) particles.splice(i,1);
+  }
+  if(particles.length>0) requestAnimationFrame(run);
+  else anim = false;
+}
+
+/* small periodic confetti */
+setInterval(()=> spawnConfetti(18), 4200);
+
+/* confetti button */
+q('#confBtn').addEventListener('click', ()=> spawnConfetti(220));
+
+/* ---------- Music controls ---------- */
+const bg = q('#bgMusic');
+const playBtn = q('#playBtn');
+let playing = false;
+playBtn.addEventListener('click', async ()=>{
+  try{
+    if(!playing){ await bg.play(); playing=true; playBtn.textContent='⏸ Pause'; playBtn.setAttribute('aria-pressed','true'); }
+    else { bg.pause(); playing=false; playBtn.textContent='▶ Play'; playBtn.setAttribute('aria-pressed','false'); }
+  }catch(e){
+    alert('Tap once anywhere on the page first (mobile autoplay restriction).');
+  }
+});
+
+/* ---------- Gift click action ---------- */
+q('#gift').addEventListener('click', ()=>{
+  spawnConfetti(120);
+  // small popup
+  setTimeout(()=> alert('Surprise! Sending you lots of love 💝'), 450);
+});
+
+/* ---------- Click cake to "make a wish" ---------- */
+document.querySelectorAll('.cake, .cake *').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    spawnConfetti(160);
+    placeCandles(7); // re-flicker candles
+    const wish = prompt('Make a wish for ' + name + ' — type it and press OK');
+    if(wish) alert('Wish saved: "' + wish + '" — may it come true ✨');
+  });
+});
+
+/* ---------- Ensure mobile gesture enables audio (best-effort) ---------- */
+let tapped=false;
+function unlockAudio(){ if(!tapped){ try{ bg.play().then(()=>bg.pause()); }catch(e){} tapped=true; document.removeEventListener('click', unlockAudio); } }
+document.addEventListener('click', unlockAudio);
+
+/* ---------- Welcome micro-animation ---------- */
+setTimeout(()=>{ for(let i=0;i<5;i++){ setTimeout(spawnFloatingBalloon, i*180); } spawnConfetti(90); }, 900);
+
+/* ---------- safety: clean intervals on unload ---------- */
+window.addEventListener('beforeunload', ()=>{ clearInterval(b1); clearInterval(b2); });
+
+</script>
+</body>
+</html>
